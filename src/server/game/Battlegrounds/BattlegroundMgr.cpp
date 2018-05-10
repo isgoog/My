@@ -752,7 +752,12 @@ void BattlegroundMgr::SendToBattleground(Player* player, uint32 instanceId, Batt
     if (Battleground* bg = GetBattleground(instanceId))
     {
         float x, y, z, o;
-        bg->GetTeamStartLoc(player->GetBgTeamId(), x, y, z, o);
+
+        TeamId team = player->GetTeamId();
+        if (bg->isArena())
+            team = player->GetBgTeamId();
+
+        bg->GetTeamStartLoc(team, x, y, z, o);
         player->TeleportTo(bg->GetMapId(), x, y, z, o);
     }
 }
@@ -1046,7 +1051,7 @@ void BattlegroundMgr::InviteGroupToBG(GroupQueueInfo* ginfo, Battleground* bg, T
         bgQueue.PlayerInvitedToBGUpdateAverageWaitTime(ginfo);
 
         // increase invited counter for each invited player
-        bg->IncreaseInvitedCount(ginfo->teamId);
+        bg->IncreaseInvitedCount(player->GetTeamId());
 
         // create remind invite events
         BGQueueInviteEvent* inviteEvent = new BGQueueInviteEvent(player->GetGUID(), ginfo->IsInvitedToBGInstanceGUID, ginfo->BgTypeId, ginfo->ArenaType, ginfo->RemoveInviteTime);

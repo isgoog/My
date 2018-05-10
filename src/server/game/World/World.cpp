@@ -76,6 +76,7 @@
 #include "AsyncAuctionListing.h"
 #include "SavingSystem.h"
 #include <VMapManager2.h>
+#pragma execution_character_set("utf-8")
 
 ACE_Atomic_Op<ACE_Thread_Mutex, bool> World::m_stopEvent = false;
 uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
@@ -1076,6 +1077,8 @@ void World::LoadConfigSettings(bool reload)
     m_bool_configs[CONFIG_ARENA_QUEUE_ANNOUNCER_ENABLE]              = sConfigMgr->GetBoolDefault ("Arena.QueueAnnouncer.Enable", false);
 
     m_bool_configs[CONFIG_OFFHAND_CHECK_AT_SPELL_UNLEARN]            = sConfigMgr->GetBoolDefault("OffhandCheckAtSpellUnlearn", true);
+    m_bool_configs[CROSSFACTION_BATTLEGROUND_SYSTEM]                = sConfigMgr->GetBoolDefault("CrossFactionSystem.Battlegrounds", true);
+
 
     if (int32 clientCacheId = sConfigMgr->GetIntDefault("ClientCacheVersion", 0))
     {
@@ -1873,7 +1876,7 @@ void World::SetInitialWorldSettings()
 
     uint32 startupDuration = GetMSTimeDiffToNow(startupBegin);
     sLog->outString();
-    sLog->outError("WORLD: World initialized in %u minutes %u seconds", (startupDuration / 60000), ((startupDuration % 60000) / 1000));
+    sLog->outError("系统: 服务器初始化耗时 %u 分 %u 秒", (startupDuration / 60000), ((startupDuration % 60000) / 1000));
     sLog->outString();
 
     // possibly enable db logging; avoid massive startup spam by doing it here.
@@ -1971,7 +1974,7 @@ void World::Update(uint32 diff)
         m_updateTimeSum += diff;
         if (m_updateTimeSum > m_int_configs[CONFIG_INTERVAL_LOG_UPDATE])
         {
-            sLog->outBasic("Average update time diff: %u. Players online: %u.", avgDiffTracker.getAverage(), (uint32)GetActiveSessionCount());
+            sLog->outBasic("服务器延迟: %u. 后台连接数量: %u.", avgDiffTracker.getAverage(), (uint32)GetActiveSessionCount());
             m_updateTimeSum = 0;
         }
     }
