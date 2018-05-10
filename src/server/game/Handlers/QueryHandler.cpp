@@ -381,7 +381,7 @@ void WorldSession::HandlePageTextQueryOpcode(WorldPacket & recvData)
 
         if (!pageText)
         {
-            data << "Item page missing.";
+            data << "Lost product page...";
             data << uint32(0);
             pageID = 0;
         }
